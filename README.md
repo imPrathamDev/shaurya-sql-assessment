@@ -52,8 +52,14 @@ SELECT FullName FROM Employees WHERE EmpRole = 'SDE' ORDER BY FullName DESC;
 
 ## 5. List the name of CTO of ‘Adarsh Ram’ (EmpID 8).
 
+### Updated & Corrected
+
 ```sql
-SELECT E.FullName FROM Employees E JOIN Employees A ON E.ManagerID = A.EmpID WHERE A.EmpID = 8 AND E.EmpRole = 'CTO';
+SELECT C.FullName
+FROM Employees AS A
+JOIN Employees AS B ON A.ManagerID = B.EmpID
+JOIN Employees AS C ON B.ManagerID = C.EmpID
+WHERE A.EmpID = 8;
 ```
 
 ## 6. List the names of all SDEs whose Salary is at least ₹25,000 less than their Analysts.
