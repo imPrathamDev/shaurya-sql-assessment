@@ -33,6 +33,7 @@ INSERT INTO Employees VALUES
     (5, 'Sourav', 'Singha', 'SDE', 11, '2023-09-21', 25000),
     (6, 'Pratham', 'Sharma', 'SDE', 11, '2023-01-09', 20000),
     (7, 'Pushti', 'Gupta', 'SDE', 12, '2022-11-16', 60000),
+    (9, 'Surya', 'Bhatt', 'SDE', 12, '2018-08-13', 30000),
     (8, 'Adarsh', 'Ram', 'SDE', 12, '2020-04-15', 60000);
 ```
 
@@ -47,62 +48,46 @@ WHERE Position = 'Analyst';
 ## 4. List the names of all SDEs in reverse alphabetical order.
 
 ```sql
-SELECT FirstName, LastName
-FROM Employees
-WHERE Position = 'SDE'
-ORDER BY LastName DESC;
+SELECT FirstName, LastName FROM Employees WHERE Position = 'SDE' ORDER BY LastName DESC;
 ```
 
 ## 5. List the name of CTO of ‘Adarsh Ram’ (EmpID 8).
 
 ```sql
-SELECT E.FirstName, E.LastName
-FROM Employees E
-JOIN Employees A ON E.ManagerID = A.EmpID
-WHERE A.EmpID = 8 AND E.Position = 'CTO';
+SELECT E.FirstName, E.LastName FROM Employees E JOIN Employees A ON E.ManagerID = A.EmpID WHERE A.EmpID = 8 AND E.Position = 'CTO';
 ```
 
 ## 6. List the names of all SDEs whose Salary is at least ₹25,000 less than their Analysts.
 
 ```sql
-SELECT SDE.FirstName, SDE.LastName
-FROM Employees SDE
-JOIN Employees Analyst ON SDE.ManagerID = Analyst.EmpID
-WHERE SDE.Position = 'SDE' AND Analyst.Position = 'Analyst' AND SDE.Salary <= Analyst.Salary - 25000;
+SELECT SDE.FirstName, SDE.LastName FROM Employees SDE JOIN Employees Analyst ON SDE.ManagerID = Analyst.EmpID WHERE SDE.Position = 'SDE' AND Analyst.Position = 'Analyst' AND SDE.Salary <= Analyst.Salary - 25000;
 ```
 
 ## 7. List the names Employees of BeachBrainsNITK who don’t have any subordinates.
 
 ```sql
-SELECT E.FirstName, E.LastName
-FROM Employees E
-LEFT JOIN Employees Subordinate ON E.EmpID = Subordinate.ManagerID
-WHERE Subordinate.EmpID IS NULL;
+SELECT E.FirstName, E.LastName FROM Employees E LEFT JOIN Employees Subordinate ON E.EmpID = Subordinate.ManagerID WHERE Subordinate.EmpID IS NULL;
 ```
 
 ## 8. List the names of Analysts of BeachBrainsNITK who don’t have any subordinates.
 
 ```sql
-SELECT A.FirstName, A.LastName
-FROM Employees A
-LEFT JOIN Employees Subordinate ON A.EmpID = Subordinate.ManagerID
-WHERE A.Position = 'Analyst' AND Subordinate.EmpID IS NULL;
+SELECT A.FirstName, A.LastName FROM Employees A LEFT JOIN Employees Subordinate ON A.EmpID = Subordinate.ManagerID WHERE A.Position = 'Analyst' AND Subordinate.EmpID IS NULL;
 ```
 
 ## 9. List the names of Employees of BeachBrainsNITK who directly or indirectly serve under supervision of ‘Sita Bharti’ (EmpID 15).
 
 ```sql
 WITH RECURSIVE EmployeeHierarchy AS (
-SELECT EmpID, FirstName, LastName, ManagerID
-FROM Employees
-WHERE EmpID = 15
+    SELECT EmpID, FirstName, LastName, ManagerID
+    FROM Employees
+    WHERE EmpID = 15
 
     UNION
 
     SELECT E.EmpID, E.FirstName, E.LastName, E.ManagerID
     FROM Employees E
     JOIN EmployeeHierarchy EH ON E.ManagerID = EH.EmpID
-
 )
 
 SELECT FirstName, LastName
@@ -113,10 +98,10 @@ FROM EmployeeHierarchy;
 
 ```sql
 WITH SubordinateCount AS (
-SELECT ManagerID, COUNT(_) AS NumSubordinates
-FROM Employees
-GROUP BY ManagerID
-HAVING COUNT(_) >= 3
+    SELECT ManagerID, COUNT(*) AS NumSubordinates
+    FROM Employees
+    GROUP BY ManagerID
+    HAVING COUNT(*) >= 3
 )
 
 SELECT E.FirstName, E.LastName
